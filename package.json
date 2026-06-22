@@ -1,6 +1,6 @@
 {
   "name": "@agentreadyweb/mcp",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "MCP bridge for AgentReady — connect any MCP client to AgentReady's hosted /ask endpoints",
   "main": "index.js",
   "bin": {
@@ -9,7 +9,12 @@
   "scripts": {
     "start": "node index.js"
   },
-  "keywords": ["mcp", "agentready", "ai-agents", "llms"],
+  "keywords": [
+    "mcp",
+    "agentready",
+    "ai-agents",
+    "llms"
+  ],
   "author": "AgentReady",
   "repository": {
     "type": "git",

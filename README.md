@@ -4,7 +4,9 @@ Connect any MCP client to [AgentReady](https://www.agentready.it.com) — a host
 
 ## Claude Desktop
 
-Add this to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+Add this to your Claude Desktop config file:
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
 {
@@ -33,6 +35,8 @@ ask_site(domain: string, query: string)
 Ask a question about any indexed site and get a cited answer grounded in its content.
 
 **Example:** `ask_site("example.com", "What does this site do?")`
+
+> If a domain isn't indexed yet, submit it at [agentready.it.com](https://www.agentready.it.com) first, then query it here.
 
 ## Environment variables
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // AgentReady MCP bridge
 // Connects Claude Desktop (stdio) to AgentReady's hosted MCP server (HTTP)
-// Usage: npx agentready-mcp
+// Usage: npx @agentreadyweb/mcp
 
 const MCP_URL = process.env.AGENTREADY_MCP_URL || 'https://www.agentready.it.com/api/mcp'
 
