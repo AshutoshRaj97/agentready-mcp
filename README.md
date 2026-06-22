@@ -32,7 +32,7 @@ ask_site(domain: string, query: string)
 ```
 Ask a question about any indexed site and get a cited answer grounded in its content.
 
-**Example:** `ask_site("clueso.io", "What does their pricing look like?")`
+**Example:** `ask_site("example.com", "What does this site do?")`
 
 ## Environment variables
 
