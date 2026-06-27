@@ -18,7 +18,10 @@ async function forward(msg) {
   try {
     const res = await fetch(MCP_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': '@agentreadyweb/mcp/1.0.4',
+      },
       body: JSON.stringify(msg),
     })
     if (isNotification || res.status === 202) return

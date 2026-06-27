@@ -1,6 +1,6 @@
 {
   "name": "@agentreadyweb/mcp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "MCP bridge for AgentReady — connect any MCP client to AgentReady's hosted /ask endpoints",
   "main": "index.js",
   "bin": {
