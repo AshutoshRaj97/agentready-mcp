@@ -1,5 +1,7 @@
 # @agentreadyweb/mcp
 
+[![smithery badge](https://smithery.ai/badge/ashudps2004/agentready)](https://smithery.ai/server/ashudps2004/agentready)
+
 Connect any MCP client to [AgentReady](https://www.agentready.it.com) — a hosted service that makes any website queryable by AI agents.
 
 ## Claude Desktop
