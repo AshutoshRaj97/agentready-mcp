@@ -21,14 +21,23 @@ Add this to your Claude Desktop config file:
 }
 ```
 
-Restart Claude Desktop. You'll have two tools available:
+Restart Claude Desktop. You'll have three tools available:
+- `submit_site` — index any website so it can be queried
 - `list_sites` — see all indexed websites
 - `ask_site` — query any site by domain
 
 ## Available tools
 
+### submit_site
+```
+submit_site(url: string)
+```
+Index a website with AgentReady. Takes ~60 seconds. Once done, query it with `ask_site`.
+
+**Example:** `submit_site("https://docs.example.com")`
+
 ### list_sites
-Lists all websites indexed by AgentReady.
+Lists all websites currently indexed by AgentReady.
 
 ### ask_site
 ```
@@ -37,8 +46,6 @@ ask_site(domain: string, query: string)
 Ask a question about any indexed site and get a cited answer grounded in its content.
 
 **Example:** `ask_site("example.com", "What does this site do?")`
-
-> If a domain isn't indexed yet, submit it at [agentready.it.com](https://www.agentready.it.com) first, then query it here.
 
 ## Environment variables
 

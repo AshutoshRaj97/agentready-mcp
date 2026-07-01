@@ -1,6 +1,6 @@
 {
   "name": "@agentreadyweb/mcp",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "mcpName": "io.github.AshutoshRaj97/agentready-mcp",
   "description": "MCP bridge for AgentReady — connect any MCP client to AgentReady's hosted /ask endpoints",
   "main": "index.js",
