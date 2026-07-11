@@ -20,7 +20,7 @@ async function forward(msg) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'User-Agent': '@agentreadyweb/mcp/1.0.5',
+        'User-Agent': '@agentreadyweb/mcp/1.0.8',
       },
       body: JSON.stringify(msg),
     })
