@@ -99,16 +99,19 @@ Force a full re-crawl of an already-indexed site to pick up new or changed conte
 
 ## Deploy webhook
 
-Automatically re-index your docs on every deploy by calling the webhook endpoint:
+Automatically re-index your docs on every deploy. No auth required — rate limited to once per hour per domain.
 
 ```bash
 curl -X POST https://www.agentready.it.com/api/webhook/refresh \
-  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -H "Content-Type: application/json" \
   -d '{"domain": "docs.yoursite.com"}'
 ```
 
-Contact [ashudps2004@gmail.com](mailto:ashudps2004@gmail.com) to get a webhook secret.
+Or pass the domain as a query param (works with Vercel/Netlify form-encoded webhook payloads):
+
+```
+https://www.agentready.it.com/api/webhook/refresh?domain=docs.yoursite.com
+```
 
 ## How indexing works
 

@@ -1,5 +1,5 @@
 // @agentreadyweb/docusaurus-plugin
-// Automatically indexes your Docusaurus site in AgentReady after each build.
+// Automatically re-indexes your Docusaurus site in AgentReady after each build.
 // AI agents (Claude, Cursor, Windsurf, etc.) can then query your docs via MCP.
 //
 // Usage in docusaurus.config.js:
@@ -10,26 +10,25 @@
 // Options:
 //   domain     — your docs domain (falls back to siteConfig.url if omitted)
 //   autoSubmit — set to false to disable the postBuild API call (default: true)
-//   secret     — WEBHOOK_REFRESH_SECRET for forced re-index (optional)
 
 const AGENTREADY_API = 'https://www.agentready.it.com'
 
 async function submitSite(url) {
   const res = await fetch(`${AGENTREADY_API}/api/submit`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': '@agentreadyweb/docusaurus-plugin/1.0.0' },
+    headers: { 'Content-Type': 'application/json', 'User-Agent': '@agentreadyweb/docusaurus-plugin/1.0.1' },
     body: JSON.stringify({ url }),
   })
   return { ok: res.ok, status: res.status }
 }
 
-async function refreshSite(domain, secret) {
+async function refreshSite(domain) {
   const res = await fetch(`${AGENTREADY_API}/api/webhook/refresh`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': '@agentreadyweb/docusaurus-plugin/1.0.0', 'Authorization': `Bearer ${secret}` },
+    headers: { 'Content-Type': 'application/json', 'User-Agent': '@agentreadyweb/docusaurus-plugin/1.0.1' },
     body: JSON.stringify({ domain }),
   })
-  return { ok: res.ok, status: res.status }
+  return { ok: res.ok || res.status === 429, status: res.status }
 }
 
 function resolveUrl(domain, siteConfigUrl) {
@@ -40,7 +39,7 @@ function resolveUrl(domain, siteConfigUrl) {
 
 /** @param {import('@docusaurus/types').LoadContext} context */
 module.exports = function agentReadyPlugin(context, options = {}) {
-  const { domain, autoSubmit = true, secret } = options
+  const { domain, autoSubmit = true } = options
 
   return {
     name: 'agentready-docusaurus-plugin',
@@ -59,17 +58,13 @@ module.exports = function agentReadyPlugin(context, options = {}) {
       console.log(`[AgentReady] Indexing ${url} so AI agents can query your docs…`)
 
       try {
-        let result
-        if (secret) {
-          result = await refreshSite(cleanDomain, secret)
-        } else {
-          result = await submitSite(url)
-        }
+        // Try refresh first (faster for already-indexed sites), fall back to submit
+        let result = await refreshSite(cleanDomain)
+        if (result.status === 404) result = await submitSite(url)
 
         if (result.ok) {
           console.log(`[AgentReady] ✓ Indexed! Agents can now query your docs at:`)
           console.log(`  MCP:  ${AGENTREADY_API}/api/mcp`)
-          console.log(`  Ask:  ${AGENTREADY_API}/${cleanDomain}/ask`)
           console.log(`  More: ${AGENTREADY_API}/connect`)
         } else {
           console.warn(`[AgentReady] Submission returned ${result.status} — index manually at ${AGENTREADY_API}`)
