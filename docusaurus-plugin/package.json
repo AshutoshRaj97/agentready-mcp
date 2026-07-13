@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AshutoshRaj97/agentready-mcp.git",
+    "url": "git+https://github.com/AshutoshRaj97/agentready-mcp.git",
     "directory": "docusaurus-plugin"
   },
   "homepage": "https://www.agentready.it.com",
