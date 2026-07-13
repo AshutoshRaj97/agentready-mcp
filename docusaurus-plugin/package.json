@@ -1,0 +1,33 @@
+{
+  "name": "@agentreadyweb/docusaurus-plugin",
+  "version": "1.0.0",
+  "description": "Docusaurus plugin that auto-indexes your docs in AgentReady after each build — making them instantly queryable by Claude, Cursor, and any MCP client",
+  "main": "index.js",
+  "keywords": [
+    "docusaurus",
+    "docusaurus-plugin",
+    "mcp",
+    "agentready",
+    "llms-txt",
+    "ai-agents"
+  ],
+  "author": "AgentReady",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AshutoshRaj97/agentready-mcp.git",
+    "directory": "docusaurus-plugin"
+  },
+  "homepage": "https://www.agentready.it.com",
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "@docusaurus/core": ">=2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@docusaurus/core": {
+      "optional": true
+    }
+  }
+}
