@@ -21,10 +21,11 @@ Add this to your Claude Desktop config file:
 }
 ```
 
-Restart Claude Desktop. You'll have three tools available:
-- `submit_site` — index any website so it can be queried
+Restart Claude Desktop. You'll have four tools available:
 - `list_sites` — see all indexed websites
-- `ask_site` — query any site by domain
+- `submit_site` — index any website so it can be queried
+- `ask_site` — query any site by domain with cited, multi-page answers
+- `refresh_site` — force a re-crawl of an already-indexed site
 
 ## Cursor
 
@@ -39,6 +40,10 @@ Add to `~/.cursor/mcp.json`:
 }
 ```
 
+## Windsurf / Zed / other clients
+
+Any MCP client that supports stdio transport works the same way — use `npx -y @agentreadyweb/mcp` as the command.
+
 ## WebMCP (no install)
 
 If your client supports HTTP transport (Claude.ai, recent Claude Desktop, Cursor), connect directly by URL — no npm required:
@@ -47,26 +52,63 @@ If your client supports HTTP transport (Claude.ai, recent Claude Desktop, Cursor
 https://www.agentready.it.com/api/mcp
 ```
 
+## Docusaurus plugin
+
+If your docs site uses Docusaurus, auto-index on every build:
+
+```bash
+npm install @agentreadyweb/docusaurus-plugin
+```
+
+```js
+// docusaurus.config.js
+plugins: [
+  ['@agentreadyweb/docusaurus-plugin', { domain: 'docs.yoursite.com' }]
+]
+```
+
 ## Available tools
+
+### list_sites
+
+Lists all websites currently indexed by AgentReady with their titles and page counts. Use this to check if a domain is already available before submitting it.
 
 ### submit_site
 ```
 submit_site(url: string)
 ```
-Index a website with AgentReady. Takes ~60 seconds. Handles static sites, server-rendered pages, and JavaScript-heavy SPAs via fallback rendering. Once done, query it with `ask_site`.
+Index any website with AgentReady. Takes ~60 seconds. Handles static sites, server-rendered pages, and JavaScript-heavy SPAs via a four-layer pipeline. Once done, query it with `ask_site`.
 
 **Example:** `submit_site("https://docs.example.com")`
 
-### list_sites
-Lists all websites currently indexed by AgentReady with their titles and summaries.
-
 ### ask_site
 ```
-ask_site(domain: string, query: string)
+ask_site(domain: string, query: string, url?: string)
 ```
-Ask a question about any website and get a cited answer grounded in its content. If the site isn't indexed yet, AgentReady will crawl and index it automatically before answering.
+Ask a question about any website and get a cited answer grounded in its content. Synthesises information across multiple pages. If the site isn't indexed yet, AgentReady crawls and indexes it automatically before answering (~60s).
 
-**Example:** `ask_site("example.com", "What does this site do?")`
+**Example:** `ask_site("stripe.com", "What are the fees for card payments?")`
+
+### refresh_site
+```
+refresh_site(domain: string)
+```
+Force a full re-crawl of an already-indexed site to pick up new or changed content. Takes ~60 seconds.
+
+**Example:** `refresh_site("docs.example.com")`
+
+## Deploy webhook
+
+Automatically re-index your docs on every deploy by calling the webhook endpoint:
+
+```bash
+curl -X POST https://www.agentready.it.com/api/webhook/refresh \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "docs.yoursite.com"}'
+```
+
+Contact [ashudps2004@gmail.com](mailto:ashudps2004@gmail.com) to get a webhook secret.
 
 ## How indexing works
 
