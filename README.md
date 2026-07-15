@@ -1,8 +1,27 @@
 # @agentreadyweb/mcp
 
 [![smithery badge](https://smithery.ai/badge/ashudps2004/agentready)](https://smithery.ai/servers/ashudps2004/agentready)
+[![npm](https://img.shields.io/npm/v/@agentreadyweb/mcp)](https://www.npmjs.com/package/@agentreadyweb/mcp)
 
-Connect any MCP client to [AgentReady](https://www.agentready.it.com) — a hosted service that makes any website queryable by AI agents.
+## What is AgentReady?
+
+[AgentReady](https://www.agentready.it.com) is a hosted service that makes any website queryable by AI agents via MCP.
+
+Paste a URL → AgentReady crawls the site, generates a spec-compliant `llms.txt`, and hosts a live `/ask` RAG endpoint and MCP server. Any AI agent with MCP support — Claude Desktop, Cursor, Windsurf, VS Code Copilot, Claude Code — can then query that site in natural language and get cited, multi-page answers.
+
+**The problem it solves:** AI agents using `web_fetch` fetch one page at a time, get empty HTML from JavaScript SPAs (React, Next.js, Vue), and hallucinate when the answer spans multiple pages. AgentReady indexes the whole site, handles JS rendering, and retrieves across pages — so agents get the right answer instead of a confident wrong one.
+
+**What's already indexed:** 110+ developer sites including Stripe, Vercel, Supabase, Tailwind CSS, Next.js, React, Anthropic, OpenAI, Cloudflare, Linear, Figma, Resend, and more. [Browse the directory →](https://www.agentready.it.com/directory)
+
+**Key properties:**
+- Works on any public URL — static sites, React/Next.js SPAs, Docusaurus, GitBook, custom engines
+- No account required to index your first site
+- Shared index — one team member submits a site, everyone on the team can query it instantly
+- Handles JS-rendered pages that `web_fetch` returns empty for
+
+---
+
+Connect any MCP client to AgentReady:
 
 ## Claude Desktop
 
@@ -39,6 +58,43 @@ Add to `~/.cursor/mcp.json`:
   }
 }
 ```
+
+## Claude Code
+
+```bash
+claude mcp add agentready npx @agentreadyweb/mcp
+```
+
+Or add to `.claude/settings.json` in your project root to share with your team:
+
+```json
+{
+  "mcpServers": {
+    "agentready": {
+      "command": "npx",
+      "args": ["-y", "@agentreadyweb/mcp"]
+    }
+  }
+}
+```
+
+## VS Code (GitHub Copilot agent mode)
+
+Requires VS Code 1.99+ with the GitHub Copilot extension. Create `.vscode/mcp.json` in your project root:
+
+```json
+{
+  "servers": {
+    "agentready": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@agentreadyweb/mcp"]
+    }
+  }
+}
+```
+
+Copilot's MCP tools are only available in agent mode. Commit this file to share with your team.
 
 ## Windsurf / Zed / other clients
 
