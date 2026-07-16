@@ -123,6 +123,69 @@ plugins: [
 ]
 ```
 
+## MkDocs plugin
+
+If your docs site uses MkDocs, auto-index on every build:
+
+```bash
+pip install mkdocs-agentready
+```
+
+```yaml
+# mkdocs.yml
+plugins:
+  - search
+  - agentready
+```
+
+If `site_url` is not set, specify the domain explicitly:
+
+```yaml
+plugins:
+  - agentready:
+      domain: docs.yoursite.com
+```
+
+## Starlight plugin
+
+If your docs site uses Starlight (Astro), auto-index on every build:
+
+```bash
+npm install starlight-agentready
+```
+
+```js
+// astro.config.mjs
+import agentready from 'starlight-agentready'
+
+export default defineConfig({
+  site: 'https://docs.yoursite.com',
+  integrations: [
+    starlight({
+      plugins: [agentready()],
+    }),
+  ],
+})
+```
+
+## Sphinx extension
+
+If your docs site uses Sphinx, auto-index on every build:
+
+```bash
+pip install sphinx-agentready
+```
+
+```python
+# conf.py
+extensions = [
+    "sphinx_agentready.extension",
+]
+
+# Domain is inferred from html_baseurl automatically, or set explicitly:
+agentready_domain = "docs.yoursite.com"
+```
+
 ## Available tools
 
 ### list_sites
