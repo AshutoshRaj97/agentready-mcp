@@ -1,6 +1,6 @@
 {
   "name": "@agentreadyweb/mcp",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "mcpName": "io.github.AshutoshRaj97/agentready-mcp",
   "description": "Query any website's documentation with cited, multi-page answers via MCP. Submit any public URL and ask questions in natural language. Covers developer tools, APIs, cloud platforms, frameworks, databases, and more. Handles JS-rendered SPAs that web_fetch cannot read.",
   "main": "index.js",

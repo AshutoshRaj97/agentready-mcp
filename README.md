@@ -19,6 +19,29 @@ Paste a URL → AgentReady crawls the site, generates a spec-compliant `llms.txt
 - Shared index — one team member submits a site, everyone on the team can query it instantly
 - Handles JS-rendered pages that `web_fetch` returns empty for
 
+## CLI
+
+The same package doubles as a CLI — no install, no account:
+
+```bash
+# Agent-readiness report card (llms.txt, sitemap, robots, JS-rendering, index status)
+npx @agentreadyweb/mcp grade yourdocs.com
+
+# Ask any site a question, get a cited answer (auto-indexes new sites in ~60s)
+npx @agentreadyweb/mcp ask stripe.com "what is the test card number?"
+
+# Index or re-crawl a site
+npx @agentreadyweb/mcp index yourdocs.com
+npx @agentreadyweb/mcp refresh yourdocs.com
+```
+
+`grade` exits non-zero below a B, so you can use it as a CI gate. `refresh` in your docs deploy pipeline keeps the index fresh automatically:
+
+```yaml
+# GitHub Actions — after your docs deploy step
+- run: npx @agentreadyweb/mcp refresh yourdocs.com
+```
+
 ---
 
 Connect any MCP client to AgentReady:
