@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.AshutoshRaj97/agentready-mcp",
-  "description": "Query any website's documentation with cited, multi-page answers. Submit any public URL and ask questions in natural language — AgentReady indexes developer tools, APIs, cloud platforms, frameworks, databases, and more. Handles JS-rendered SPAs that web_fetch cannot read. Tools: list_sites, ask_site, submit_site, refresh_site.",
+  "description": "Query any docs site via MCP. Submit a URL, ask questions, get cited answers.",
   "repository": {
     "url": "https://github.com/AshutoshRaj97/agentready-mcp",
     "source": "github"
