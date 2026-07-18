@@ -14,6 +14,7 @@ const MCP_URL = process.env.AGENTREADY_MCP_URL || 'https://www.agentready.it.com
 const APP_ORIGIN = new URL(MCP_URL).origin
 const VERSION = require('./package.json').version
 const UA = `@agentreadyweb/mcp/${VERSION}`
+const BRIDGE_TIMEOUT_MS = 120000
 
 // ─── ANSI helpers (no deps; respect NO_COLOR and non-TTY) ────────────────────
 
@@ -25,6 +26,18 @@ const green = c('32')
 const red = c('31')
 const yellow = c('33')
 const cyan = c('36')
+
+async function readJsonResponse(res) {
+  const body = await res.text()
+  if (!body) return null
+  try { return JSON.parse(body) } catch { return null }
+}
+
+function describeHttpError(res, data) {
+  const message = data?.error?.message || data?.message || `AgentReady returned HTTP ${res.status}`
+  const retryAfter = res.headers.get('retry-after')
+  return retryAfter ? `${message} Retry after ${retryAfter}s.` : message
+}
 
 // ─── MCP stdio bridge (default mode) ─────────────────────────────────────────
 
@@ -47,9 +60,12 @@ function runMcpBridge() {
           'User-Agent': UA,
         },
         body: JSON.stringify(msg),
+        signal: AbortSignal.timeout(BRIDGE_TIMEOUT_MS),
       })
       if (isNotification || res.status === 202) return
-      const data = await res.json()
+      const data = await readJsonResponse(res)
+      if (!res.ok) throw new Error(describeHttpError(res, data))
+      if (!data) throw new Error(`AgentReady returned invalid JSON (HTTP ${res.status})`)
       process.stdout.write(JSON.stringify(data) + '\n')
     } catch (e) {
       if (!isNotification) {
@@ -100,7 +116,9 @@ async function callTool(name, args, timeoutMs = 90000) {
     }),
     signal: AbortSignal.timeout(timeoutMs),
   })
-  const data = await res.json()
+  const data = await readJsonResponse(res)
+  if (!res.ok) throw new Error(describeHttpError(res, data))
+  if (!data) throw new Error(`AgentReady returned invalid JSON (HTTP ${res.status})`)
   if (data.error) throw new Error(data.error.message)
   return { text: data.result?.content?.[0]?.text ?? '', isError: data.result?.isError === true }
 }
@@ -126,7 +144,8 @@ async function cmdGrade(url, jsonOutput = false) {
       body: JSON.stringify({ url }),
       signal: AbortSignal.timeout(30000),
     })
-    data = await res.json()
+    data = await readJsonResponse(res)
+    if (!data) fail(`AgentReady returned invalid JSON (HTTP ${res.status})`)
     if (!res.ok) fail(data.error || `Server returned ${res.status}`)
   } catch (e) {
     fail(`Could not reach AgentReady: ${e.message}`)
