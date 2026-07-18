@@ -35,6 +35,15 @@ npx @agentreadyweb/mcp index yourdocs.com
 npx @agentreadyweb/mcp refresh yourdocs.com
 ```
 
+For CI, dashboards, or scripts, add `--json` to receive the raw report on
+stdout (progress remains on stderr):
+
+```bash
+npx @agentreadyweb/mcp grade yourdocs.com --json | jq '.grade, .score'
+```
+
+The command still exits `1` when the grade is below `B`.
+
 `grade` exits non-zero below a B, so you can use it as a CI gate. `refresh` in your docs deploy pipeline keeps the index fresh automatically:
 
 ```yaml

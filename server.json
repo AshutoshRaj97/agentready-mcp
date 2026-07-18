@@ -7,6 +7,12 @@
     "source": "github"
   },
   "version": "1.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://www.agentready.it.com/api/mcp"
+    }
+  ],
   "packages": [
     {
       "registryType": "npm",

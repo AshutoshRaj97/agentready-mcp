@@ -5,7 +5,7 @@
 //   npx @agentreadyweb/mcp
 //
 // CLI commands:
-//   npx @agentreadyweb/mcp grade <url>              Agent-readiness report card
+//   npx @agentreadyweb/mcp grade <url> [--json]     Agent-readiness report card
 //   npx @agentreadyweb/mcp ask <domain> <question>  Ask any site a question
 //   npx @agentreadyweb/mcp index <url>              Index a site (~60s)
 //   npx @agentreadyweb/mcp refresh <domain>         Force a re-crawl
@@ -114,7 +114,7 @@ const GRADE_COLORS = { 'A+': green, A: green, B: cyan, C: yellow, D: yellow, F: 
 
 // ─── grade ───────────────────────────────────────────────────────────────────
 
-async function cmdGrade(url) {
+async function cmdGrade(url, jsonOutput = false) {
   if (!url) fail('Usage: npx @agentreadyweb/mcp grade <url>')
   process.stderr.write(dim(`\n  Checking ${url} …\n`))
 
@@ -130,6 +130,13 @@ async function cmdGrade(url) {
     if (!res.ok) fail(data.error || `Server returned ${res.status}`)
   } catch (e) {
     fail(`Could not reach AgentReady: ${e.message}`)
+  }
+
+  // Keep stdout valid JSON for CI, GitHub Actions, and dashboards. Progress
+  // remains on stderr so callers can safely pipe stdout into jq or a file.
+  if (jsonOutput) {
+    console.log(JSON.stringify(data))
+    process.exit(data.score >= 4 ? 0 : 1)
   }
 
   const gradeColor = GRADE_COLORS[data.grade] ?? red
@@ -205,7 +212,7 @@ function printHelp() {
 
   ${bold('Usage')}
     npx @agentreadyweb/mcp                       ${dim('start MCP stdio bridge (for Claude/Cursor config)')}
-    npx @agentreadyweb/mcp grade <url>           ${dim('agent-readiness report card (exit 1 below a B — CI-friendly)')}
+    npx @agentreadyweb/mcp grade <url> [--json]  ${dim('agent-readiness report card (exit 1 below a B — CI-friendly)')}
     npx @agentreadyweb/mcp ask <domain> "<q>"    ${dim('ask any site a question, get a cited answer')}
     npx @agentreadyweb/mcp index <url>           ${dim('index a site so agents can query it (~60s)')}
     npx @agentreadyweb/mcp refresh <domain>      ${dim('force a re-crawl (use after docs deploys)')}
@@ -225,7 +232,7 @@ switch (cmd) {
     runMcpBridge()
     break
   case 'grade':
-    cmdGrade(rest[0])
+    cmdGrade(rest.find((arg) => arg !== '--json'), rest.includes('--json'))
     break
   case 'ask':
     cmdAsk(rest[0], rest.slice(1))
