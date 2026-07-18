@@ -45,6 +45,14 @@ function runMcpBridge() {
   let pending = 0
   let stdinEnded = false
 
+  function writeProtocolError(code, message) {
+    process.stdout.write(JSON.stringify({
+      jsonrpc: '2.0',
+      id: null,
+      error: { code, message },
+    }) + '\n')
+  }
+
   function tryExit() {
     if (stdinEnded && pending === 0) process.exit(0)
   }
@@ -92,7 +100,16 @@ function runMcpBridge() {
     buf = lines.pop()
     for (const line of lines) {
       if (!line.trim()) continue
-      try { forward(JSON.parse(line)) } catch {}
+      try {
+        const message = JSON.parse(line)
+        if (message === null || typeof message !== 'object') {
+          writeProtocolError(-32600, 'Invalid Request')
+          continue
+        }
+        void forward(message)
+      } catch {
+        writeProtocolError(-32700, 'Parse error')
+      }
     }
   })
 
