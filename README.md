@@ -5,19 +5,21 @@
 
 ## What is AgentReady?
 
-[AgentReady](https://www.agentready.it.com) is a hosted service that makes any website queryable by AI agents via MCP.
+[AgentReady](https://www.agentready.it.com) is a hosted capability layer that makes any website discoverable and usable by agents through MCP.
 
-Paste a URL → AgentReady crawls the site, generates a spec-compliant `llms.txt`, and hosts a live `/ask` RAG endpoint and MCP server. Any AI agent with MCP support — Claude Desktop, Cursor, Windsurf, VS Code Copilot, Claude Code — can then query that site in natural language and get cited, multi-page answers.
+Paste a URL → AgentReady crawls the site, generates a spec-compliant `llms.txt`, and hosts a live `/ask` RAG endpoint and MCP server. Any MCP-compatible agent client can then discover the site, ask natural-language questions, inspect capabilities, and create grounded read-only plans with citations.
 
 **The problem it solves:** AI agents using `web_fetch` fetch one page at a time, get empty HTML from JavaScript SPAs (React, Next.js, Vue), and hallucinate when the answer spans multiple pages. AgentReady indexes the whole site, handles JS rendering, and retrieves across pages — so agents get the right answer instead of a confident wrong one.
 
-**What's already indexed:** 110+ developer sites including Stripe, Vercel, Supabase, Tailwind CSS, Next.js, React, Anthropic, OpenAI, Cloudflare, Linear, Figma, Resend, and more. [Browse the directory →](https://www.agentready.it.com/directory)
+**What's already indexed:** Browse the live [AgentReady directory →](https://www.agentready.it.com/directory) or index any public site yourself.
 
 **Key properties:**
 - Works on any public URL — static sites, React/Next.js SPAs, Docusaurus, GitBook, custom engines
 - No account required to index your first site
 - Shared index — one team member submits a site, everyone on the team can query it instantly
 - Handles JS-rendered pages that `web_fetch` returns empty for
+- Capability manifests expose freshness, schemas, endpoints, and read-only limits
+- Grounded plans return evidence, risks, confirmation requirements, and durable receipts
 
 ## CLI
 
@@ -53,13 +55,11 @@ The command still exits `1` when the grade is below `B`.
 
 ---
 
-Connect any MCP client to AgentReady:
+Connect any MCP-compatible client to AgentReady:
 
-## Claude Desktop
+## Local MCP bridge (stdio)
 
-Add this to your Claude Desktop config file:
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+For clients that use an `mcpServers` configuration, add the AgentReady bridge:
 
 ```json
 {
@@ -72,11 +72,14 @@ Add this to your Claude Desktop config file:
 }
 ```
 
-Restart Claude Desktop. You'll have four tools available:
+Restart your client. You'll have seven tools available:
 - `list_sites` — see all indexed websites
+- `get_site_capabilities` — inspect a site manifest, freshness, schemas, and endpoints
+- `ask_site` — query any site with cited, multi-page answers
+- `plan_site_action` — create a grounded, read-only plan and receipt
 - `submit_site` — index any website so it can be queried
-- `ask_site` — query any site by domain with cited, multi-page answers
 - `refresh_site` — force a re-crawl of an already-indexed site
+- `rate_answer` — submit quality feedback
 
 ## Cursor
 
@@ -91,13 +94,13 @@ Add to `~/.cursor/mcp.json`:
 }
 ```
 
-## Claude Code
+## Project or terminal setup
 
 ```bash
-claude mcp add agentready npx @agentreadyweb/mcp
+npx @agentreadyweb/mcp
 ```
 
-Or add to `.claude/settings.json` in your project root to share with your team:
+Or add the same `agentready` server to your client's project configuration to share it with your team:
 
 ```json
 {
@@ -134,7 +137,7 @@ Any MCP client that supports stdio transport works the same way — use `npx -y 
 
 ## WebMCP (no install)
 
-If your client supports HTTP transport (Claude.ai, recent Claude Desktop, Cursor), connect directly by URL — no npm required:
+If your client supports HTTP transport, connect directly by URL — no npm required:
 
 ```
 https://www.agentready.it.com/api/mcp
@@ -224,6 +227,18 @@ agentready_domain = "docs.yoursite.com"
 
 Lists all websites currently indexed by AgentReady with their titles and page counts. Use this to check if a domain is already available before submitting it.
 
+### get_site_capabilities
+```
+get_site_capabilities(domain: string)
+```
+Returns the site's capability manifest, freshness state, schemas, and available HTTP/MCP endpoints.
+
+### plan_site_action
+```
+plan_site_action(domain: string, request: string)
+```
+Creates a grounded, read-only plan with evidence, risks, confirmation requirements, and a durable receipt. It does not execute side effects.
+
 ### submit_site
 ```
 submit_site(url: string)
@@ -247,6 +262,12 @@ refresh_site(domain: string)
 Force a full re-crawl of an already-indexed site to pick up new or changed content. Takes ~60 seconds.
 
 **Example:** `refresh_site("docs.example.com")`
+
+### rate_answer
+```
+rate_answer(domain: string, rating: number, request_id?: string, comment?: string)
+```
+Submits 1–5 quality feedback, optionally tied to the exact `ask_site` request.
 
 ## Deploy webhook
 

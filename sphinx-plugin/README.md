@@ -1,6 +1,6 @@
 # sphinx-agentready
 
-Sphinx extension that submits your docs site to [AgentReady](https://www.agentready.it.com) after every build, making it instantly queryable by AI agents (Claude, Cursor, Windsurf, and any MCP client) with cited, multi-page answers.
+Sphinx extension that submits your docs site to [AgentReady](https://www.agentready.it.com) after every build, making it instantly queryable by agents through any MCP-compatible client with cited, multi-page answers.
 
 ## Installation
 
@@ -32,16 +32,16 @@ After each `sphinx-build` or `make html`:
 
 After your site builds, the extension posts your domain to AgentReady's indexing webhook. AgentReady crawls your docs and makes them queryable via:
 
-- **MCP server** — `https://www.agentready.it.com/api/mcp` (works in Claude, Cursor, Windsurf, and any MCP client)
+- **MCP server** — `https://www.agentready.it.com/api/mcp` (works with any MCP-compatible client)
 - **REST endpoint** — `POST https://www.agentready.it.com/api/sites/{id}/ask`
 - **llms.txt** — `https://www.agentready.it.com/api/sites/{id}/llms.txt`
 
 ## Connecting to your AI tools
 
-**Claude Code / Claude Desktop**
+**Local MCP bridge (stdio)**
 
 ```bash
-claude mcp add agentready npx @agentreadyweb/mcp
+npx @agentreadyweb/mcp
 ```
 
 **VS Code (GitHub Copilot)**
@@ -60,6 +60,8 @@ claude mcp add agentready npx @agentreadyweb/mcp
 ```
 
 Then ask your AI: _"Ask agentready: how do I configure X in [your docs]?"_
+
+The MCP server currently exposes seven tools: `list_sites`, `get_site_capabilities`, `ask_site`, `plan_site_action`, `submit_site`, `refresh_site`, and `rate_answer`. Plans are read-only; any action connector requires explicit confirmation.
 
 ## Configuration
 

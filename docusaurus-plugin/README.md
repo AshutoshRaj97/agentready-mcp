@@ -1,6 +1,6 @@
 # @agentreadyweb/docusaurus-plugin
 
-Auto-index your Docusaurus site in [AgentReady](https://www.agentready.it.com) after every build — making your docs instantly queryable by Claude, Cursor, Windsurf, and any MCP client.
+Auto-index your Docusaurus site in [AgentReady](https://www.agentready.it.com) after every build — making your docs instantly queryable through any MCP-compatible client.
 
 ## Install
 
@@ -36,7 +36,6 @@ That's it. After each `docusaurus build`, the plugin POSTs your domain to AgentR
 Once indexed, any MCP client can query your docs:
 
 ```js
-// Claude Desktop / Cursor / Windsurf
 // Add to your MCP config:
 {
   "agentready": {
@@ -50,6 +49,8 @@ Or connect via HTTP:
 ```
 https://www.agentready.it.com/api/mcp
 ```
+
+The MCP server currently exposes seven tools: `list_sites`, `get_site_capabilities`, `ask_site`, `plan_site_action`, `submit_site`, `refresh_site`, and `rate_answer`. Plans are read-only; any action connector requires explicit confirmation.
 
 ## Options
 
