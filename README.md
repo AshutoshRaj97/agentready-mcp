@@ -21,6 +21,12 @@ Paste a URL → AgentReady crawls the site, generates a spec-compliant `llms.txt
 - Capability manifests expose freshness, schemas, endpoints, and read-only limits
 - Grounded plans return evidence, risks, confirmation requirements, and durable receipts
 
+## Built with Codex and GPT-5.6
+
+Codex, powered by GPT-5.6, was used throughout development as an engineering copilot. It helped extend and test the MCP server, automatic indexing flows, capability manifests, safe action planning, CLI commands, documentation, and production integrations.
+
+The MCP package is model-agnostic at the client boundary. GPT-5.6 supported development, testing, and iteration without being required by the end user's MCP client.
+
 ## CLI
 
 The same package doubles as a CLI — no install, no account:
