@@ -74,11 +74,11 @@ For clients that use an `mcpServers` configuration, add the AgentReady bridge:
 
 Restart your client. You'll have seven tools available:
 - `list_sites` — see all indexed websites
-- `get_site_capabilities` — inspect a site manifest, freshness, schemas, and endpoints
+- `get_site_capabilities` — index on demand, then inspect a site manifest, freshness, schemas, and endpoints
 - `ask_site` — query any site with cited, multi-page answers
-- `plan_site_action` — create a grounded, read-only plan and receipt
+- `plan_site_action` — index on demand, then create a grounded, read-only plan and receipt
 - `submit_site` — index any website so it can be queried
-- `refresh_site` — force a re-crawl of an already-indexed site
+- `refresh_site` — re-crawl a site, or perform its initial index when it is new
 - `rate_answer` — submit quality feedback
 
 ## Cursor
@@ -259,7 +259,7 @@ Ask a question about any website and get a cited answer grounded in its content.
 ```
 refresh_site(domain: string)
 ```
-Force a full re-crawl of an already-indexed site to pick up new or changed content. Takes ~60 seconds.
+Force a full re-crawl of a site to pick up new or changed content. If the site is new, AgentReady performs its initial index automatically. Takes ~60 seconds.
 
 **Example:** `refresh_site("docs.example.com")`
 
