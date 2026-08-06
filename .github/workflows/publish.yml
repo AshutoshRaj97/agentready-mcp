@@ -33,13 +33,7 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Publish to npm
-        if: steps.version.outputs.changed == 'true'
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Sync MCP registry
+      - name: Update server.json version
         if: steps.version.outputs.changed == 'true'
         run: |
           VERSION=${{ steps.version.outputs.local }}
@@ -50,5 +44,15 @@ jobs:
             s.packages[0].version = '$VERSION';
             fs.writeFileSync('server.json', JSON.stringify(s, null, 2) + '\n');
           "
+
+      - name: Publish to npm
+        if: steps.version.outputs.changed == 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Sync MCP registry
+        if: steps.version.outputs.changed == 'true'
+        run: |
           npx mcp-publisher@latest login github-oidc
           npx mcp-publisher@latest publish
