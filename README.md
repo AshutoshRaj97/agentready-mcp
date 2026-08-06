@@ -307,3 +307,8 @@ Sites behind authentication or with no public HTML content cannot be indexed.
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `AGENTREADY_MCP_URL` | `https://www.agentready.it.com/api/mcp` | Override the MCP endpoint (for self-hosted) |
+| `AGENTREADY_TELEMETRY` | `1` | Set to `0` to disable anonymous usage telemetry |
+
+## Telemetry
+
+This package sends a lightweight anonymous ping to `agentready.it.com/api/telemetry` each time the MCP bridge starts or a CLI command runs. It contains: a random install ID (stored in `~/.agentready/install-id`), package version, Node version, platform, and which mode/command was used. No query content, no domain names, no personal data. Set `AGENTREADY_TELEMETRY=0` to opt out.

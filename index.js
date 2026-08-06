@@ -16,6 +16,47 @@ const VERSION = require('./package.json').version
 const UA = `@agentreadyweb/mcp/${VERSION}`
 const BRIDGE_TIMEOUT_MS = 120000
 
+// ─── Telemetry (anonymous install ID) ────────────────────────────────────────
+// Opt out: AGENTREADY_TELEMETRY=0
+// No query content, no domain names, no personal data — only: install ID,
+// version, Node version, platform, and which mode/command was used.
+
+const { join } = require('path')
+const { homedir } = require('os')
+const { existsSync, readFileSync, writeFileSync, mkdirSync } = require('fs')
+const { randomUUID } = require('crypto')
+
+function getInstallId() {
+  if (process.env.AGENTREADY_TELEMETRY === '0') return null
+  try {
+    const dir = join(homedir(), '.agentready')
+    const file = join(dir, 'install-id')
+    if (existsSync(file)) return readFileSync(file, 'utf8').trim()
+    mkdirSync(dir, { recursive: true })
+    const id = randomUUID()
+    writeFileSync(file, id)
+    // First run only — stderr is safe (stdout is reserved for MCP protocol)
+    process.stderr.write(
+      `\n  AgentReady: link your install to track usage →\n` +
+      `  ${APP_ORIGIN}/claim?id=${id}\n\n`
+    )
+    return id
+  } catch {
+    return null
+  }
+}
+
+function sendTelemetry(mode, cmd) {
+  const id = getInstallId()
+  if (!id) return
+  fetch(`${APP_ORIGIN}/api/telemetry`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
+    body: JSON.stringify({ id, v: VERSION, mode, cmd: cmd ?? null, node: process.version, platform: process.platform }),
+    signal: AbortSignal.timeout(5000),
+  }).catch(() => {})
+}
+
 // ─── ANSI helpers (no deps; respect NO_COLOR and non-TTY) ────────────────────
 
 const useColor = process.stdout.isTTY && !process.env.NO_COLOR
@@ -42,6 +83,7 @@ function describeHttpError(res, data) {
 // ─── MCP stdio bridge (default mode) ─────────────────────────────────────────
 
 function runMcpBridge() {
+  sendTelemetry('bridge', null)
   let pending = 0
   let stdinEnded = false
 
@@ -150,6 +192,7 @@ const GRADE_COLORS = { 'A+': green, A: green, B: cyan, C: yellow, D: yellow, F: 
 // ─── grade ───────────────────────────────────────────────────────────────────
 
 async function cmdGrade(url, jsonOutput = false) {
+  sendTelemetry('cli', 'grade')
   if (!url) fail('Usage: npx @agentreadyweb/mcp grade <url>')
   process.stderr.write(dim(`\n  Checking ${url} …\n`))
 
@@ -204,6 +247,7 @@ async function cmdGrade(url, jsonOutput = false) {
 // ─── ask / index / refresh ───────────────────────────────────────────────────
 
 async function cmdAsk(domain, questionParts) {
+  sendTelemetry('cli', 'ask')
   const question = (questionParts || []).join(' ').trim()
   if (!domain || !question) fail('Usage: npx @agentreadyweb/mcp ask <domain> "<question>"')
   process.stderr.write(dim(`\n  Asking ${domain} … (auto-indexes if new, ~60s)\n\n`))
@@ -217,6 +261,7 @@ async function cmdAsk(domain, questionParts) {
 }
 
 async function cmdIndex(url) {
+  sendTelemetry('cli', 'index')
   if (!url) fail('Usage: npx @agentreadyweb/mcp index <url>')
   process.stderr.write(dim(`\n  Indexing ${url} … (~60s)\n`))
   try {
@@ -229,6 +274,7 @@ async function cmdIndex(url) {
 }
 
 async function cmdRefresh(domain) {
+  sendTelemetry('cli', 'refresh')
   if (!domain) fail('Usage: npx @agentreadyweb/mcp refresh <domain>')
   process.stderr.write(dim(`\n  Refreshing ${domain} … (~60s)\n`))
   try {
