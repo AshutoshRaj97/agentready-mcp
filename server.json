@@ -6,7 +6,7 @@
     "url": "https://github.com/AshutoshRaj97/agentready-mcp",
     "source": "github"
   },
-  "version": "1.3.0",
+  "version": "1.3.1",
   "remotes": [
     {
       "type": "streamable-http",
@@ -17,7 +17,7 @@
     {
       "registryType": "npm",
       "identifier": "@agentreadyweb/mcp",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "transport": {
         "type": "stdio"
       },
