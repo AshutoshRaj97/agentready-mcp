@@ -21,12 +21,6 @@ Paste a URL → AgentReady crawls the site, generates a spec-compliant `llms.txt
 - Capability manifests expose freshness, schemas, endpoints, and read-only limits
 - Grounded plans return evidence, risks, confirmation requirements, and durable receipts
 
-## Built with Codex and GPT-5.6
-
-Codex, powered by GPT-5.6, was used throughout development as an engineering copilot. It helped extend and test the MCP server, automatic indexing flows, capability manifests, safe action planning, CLI commands, documentation, and production integrations.
-
-The MCP package is model-agnostic at the client boundary. GPT-5.6 supported development, testing, and iteration without being required by the end user's MCP client.
-
 ## CLI
 
 The same package doubles as a CLI — no install, no account:
@@ -78,9 +72,10 @@ For clients that use an `mcpServers` configuration, add the AgentReady bridge:
 }
 ```
 
-Restart your client. You'll have seven tools available:
+Restart your client. You'll have eight tools available:
 - `list_sites` — see all indexed websites
 - `get_site_capabilities` — index on demand, then inspect a site manifest, freshness, schemas, and endpoints
+- `get_site_facts` — key structured facts extracted from a site
 - `ask_site` — query any site with cited, multi-page answers
 - `plan_site_action` — index on demand, then create a grounded, read-only plan and receipt
 - `submit_site` — index any website so it can be queried
@@ -238,6 +233,12 @@ Lists all websites currently indexed by AgentReady with their titles and page co
 get_site_capabilities(domain: string)
 ```
 Returns the site's capability manifest, freshness state, schemas, and available HTTP/MCP endpoints.
+
+### get_site_facts
+```
+get_site_facts(domain: string)
+```
+Returns key structured facts extracted from a site — pricing tiers, feature lists, limits, and other high-signal data points that agents frequently need.
 
 ### plan_site_action
 ```
