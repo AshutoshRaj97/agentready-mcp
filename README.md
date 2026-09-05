@@ -1,6 +1,6 @@
 # @agentreadyweb/mcp
 
-[![smithery badge](https://smithery.ai/badge/ashudps2004/agentready)](https://smithery.ai/servers/ashudps2004/agentready)
+[![LightNow MCP capabilities](https://lightnow.ai/badge/io.github.AshutoshRaj97/agentready-mcp)](https://lightnow.ai/servers/io.github.AshutoshRaj97/agentready-mcp)
 [![npm](https://img.shields.io/npm/v/@agentreadyweb/mcp)](https://www.npmjs.com/package/@agentreadyweb/mcp)
 
 ## What is AgentReady?
